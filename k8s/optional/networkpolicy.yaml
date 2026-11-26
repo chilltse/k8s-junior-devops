@@ -1,0 +1,19 @@
+# Requires a CNI that enforces NetworkPolicy. Default kind networking may not enforce it.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: restrict-api-ingress
+  namespace: devops-lab
+spec:
+  podSelector:
+    matchLabels:
+      app: lab-api
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              access: api
+      ports:
+        - protocol: TCP
+          port: 8080

@@ -1,0 +1,23 @@
+name: Kubernetes smoke test
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install kind
+        uses: helm/kind-action@v1
+        with:
+          install_only: true
+      - name: Create cluster
+        run: bash scripts/bootstrap.sh
+      - name: Build and deploy
+        run: bash scripts/deploy.sh
+      - name: Smoke test
+        run: bash scripts/smoke.sh
+      - name: Cleanup
+        if: always()
+        run: bash scripts/cleanup.sh --yes

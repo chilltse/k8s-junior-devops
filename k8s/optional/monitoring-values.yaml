@@ -1,0 +1,13 @@
+prometheus:
+  prometheusSpec:
+    retention: 6h
+    serviceMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+alertmanager:
+  enabled: true
+grafana:
+  enabled: true

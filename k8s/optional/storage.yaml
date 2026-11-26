@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab-store
+  namespace: devops-lab
+spec:
+  clusterIP: None
+  selector:
+    app: lab-store
+  ports:
+    - name: redis
+      port: 6379
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: lab-store
+  namespace: devops-lab
+spec:
+  serviceName: lab-store
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lab-store
+  template:
+    metadata:
+      labels:
+        app: lab-store
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          args: ["--appendonly", "yes", "--appendfsync", "always"]
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 1Gi

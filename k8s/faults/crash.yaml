@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fault-crash
+  namespace: devops-lab
+spec:
+  containers:
+    - name: crash
+      image: lab-api:v1
+      imagePullPolicy: IfNotPresent
+      command: ["python", "-c", "import sys; print('missing configuration', flush=True); sys.exit(1)"]
+  restartPolicy: Always

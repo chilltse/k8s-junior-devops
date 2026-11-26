@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fault-oom
+  namespace: devops-lab
+spec:
+  restartPolicy: Never
+  containers:
+    - name: oom
+      image: lab-api:v1
+      imagePullPolicy: IfNotPresent
+      command: ["python", "-c", "import time; x=bytearray(128*1024*1024); time.sleep(30)"]
+      resources:
+        requests:
+          memory: 16Mi
+        limits:
+          memory: 32Mi

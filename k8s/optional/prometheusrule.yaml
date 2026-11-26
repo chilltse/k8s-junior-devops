@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: lab-api-alerts
+  namespace: devops-lab
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: lab-api
+      rules:
+        - alert: LabApiErrors
+          expr: sum(rate(lab_http_requests_total{route!~"/healthz|/readyz",status=~"5.."}[2m])) > 0.05
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Lab API error traffic detected"
+            description: "Check application logs, recent rollout, and service endpoints."
